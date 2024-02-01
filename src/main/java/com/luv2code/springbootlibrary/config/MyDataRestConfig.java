@@ -1,6 +1,7 @@
 package com.luv2code.springbootlibrary.config;
 
 import com.luv2code.springbootlibrary.entity.Book;
+import com.luv2code.springbootlibrary.entity.Review;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
@@ -25,8 +26,11 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
         };
 
         configuration.exposeIdsFor(Book.class);
+        configuration.exposeIdsFor(Review.class);
 
-        disableHttpMethods(configuration, theUnsupportedActions);
+        disableHttpMethods(Book.class, configuration, theUnsupportedActions);
+        disableHttpMethods(Review.class, configuration, theUnsupportedActions);
+
 
         /* Configure CORS Mapping */
         String theAllowedOrigins = "http://localhost:3000";
@@ -34,7 +38,7 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
                 .allowedOrigins(theAllowedOrigins);
     }
 
-    private void disableHttpMethods(RepositoryRestConfiguration configuration,
+    private void disableHttpMethods(Class theClass, RepositoryRestConfiguration configuration,
                                     HttpMethod[] theUnsupportedActions) {
 
         configuration.getExposureConfiguration()
