@@ -6,24 +6,19 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-
-import java.util.Date;
 
 /**
- * Created By dhhaval thakkar on 2024-02-01
+ * Created By dhhaval thakkar on 2024-02-02
  */
 @Entity
-@Table(name = "review")
+@Table(name = "checkout")
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class Review {
+public class Checkout {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,28 +28,30 @@ public class Review {
     @Column(name = "user_email")
     private String userEmail;
 
-    @Column(name = "date")
-    @CreationTimestamp
-    private Date date;
+    @Column(name = "checkout_date")
+    private String checkoutDate;
 
-    @Column(name = "rating")
-    private double rating;
+    @Column(name = "return_date")
+    private String returnDate;
 
     @Column(name = "book_id")
     private Long bookId;
 
-    @Column(name = "review_description")
-    private String reviewDescription;
+    public Checkout(String userEmail, String checkoutDate, String returnDate, Long bookId) {
+        this.userEmail = userEmail;
+        this.checkoutDate = checkoutDate;
+        this.returnDate = returnDate;
+        this.bookId = bookId;
+    }
 
     @Override
     public String toString() {
-        return "Review{" +
+        return "Checkout{" +
                 "id=" + id +
                 ", userEmail='" + userEmail + '\'' +
-                ", date=" + date +
-                ", rating=" + rating +
+                ", checkoutDate='" + checkoutDate + '\'' +
+                ", returnDate='" + returnDate + '\'' +
                 ", bookId=" + bookId +
-                ", reviewDescription='" + reviewDescription + '\'' +
                 '}';
     }
 }
