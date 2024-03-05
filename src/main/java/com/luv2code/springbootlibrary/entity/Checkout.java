@@ -43,15 +43,4 @@ public class Checkout {
         this.returnDate = returnDate;
         this.bookId = bookId;
     }
-
-    @Override
-    public String toString() {
-        return "Checkout{" +
-                "id=" + id +
-                ", userEmail='" + userEmail + '\'' +
-                ", checkoutDate='" + checkoutDate + '\'' +
-                ", returnDate='" + returnDate + '\'' +
-                ", bookId=" + bookId +
-                '}';
-    }
 }

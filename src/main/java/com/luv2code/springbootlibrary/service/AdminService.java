@@ -1,11 +1,15 @@
 package com.luv2code.springbootlibrary.service;
 
 import com.luv2code.springbootlibrary.dao.BookRepository;
+import com.luv2code.springbootlibrary.dao.CheckoutRepository;
+import com.luv2code.springbootlibrary.dao.ReviewRepository;
 import com.luv2code.springbootlibrary.entity.Book;
 import com.luv2code.springbootlibrary.requestmodels.AddBookRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 /**
  * Created By dhhaval thakkar on 2024-03-04
@@ -16,6 +20,36 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminService {
 
     private final BookRepository bookRepository;
+    private final ReviewRepository reviewRepository;
+    private final CheckoutRepository checkoutRepository;
+
+    public void increaseBookQuantity(Long bookId) throws Exception {
+
+        Optional<Book> book = bookRepository.findById(bookId);
+
+        if (book.isEmpty()) {
+            throw new Exception("Book not found");
+        }
+
+        book.get().setCopiesAvailable(book.get().getCopiesAvailable() + 1);
+        book.get().setCopies(book.get().getCopies() + 1);
+
+        bookRepository.save(book.get());
+    }
+
+    public void decreaseBookQuantity(Long bookId) throws Exception {
+
+        Optional<Book> book = bookRepository.findById(bookId);
+
+        if (book.isEmpty() || book.get().getCopiesAvailable() <= 0 || book.get().getCopies() <= 0) {
+            throw new Exception("Book not found or quantity locked");
+        }
+
+        book.get().setCopiesAvailable(book.get().getCopiesAvailable() - 1);
+        book.get().setCopies(book.get().getCopies() - 1);
+
+        bookRepository.save(book.get());
+    }
 
     public void postBook(AddBookRequest addBookRequest) {
         Book book = new Book();
@@ -29,5 +63,17 @@ public class AdminService {
         book.setImg(addBookRequest.getImg());
 
         bookRepository.save(book);
+    }
+
+    public void deleteBook(Long bookId) throws Exception {
+
+        Optional<Book> book = bookRepository.findById(bookId);
+        if (book.isEmpty()) {
+            throw new Exception("Book not found");
+        }
+
+        bookRepository.delete(book.get());
+        checkoutRepository.deleteAllByBookId(bookId);
+        reviewRepository.deleteAllByBookId(bookId);
     }
 }
